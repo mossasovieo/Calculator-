@@ -1,0 +1,25 @@
+public class Calculator {
+
+    // 方法：加法
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    // 方法：减法
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    public static void main(String[] args) {
+        // 创建 Calculator 对象
+        Calculator calculator = new Calculator();
+
+        // 使用 add 方法
+        int sum = calculator.add(5, 3);
+        System.out.println("5 + 3 = " + sum);
+
+        // 使用 subtract 方法
+        int difference = calculator.subtract(5, 3);
+        System.out.println("5 - 3 = " + difference);
+    }
+}
