@@ -1,0 +1,86 @@
+import asyncio
+import logging
+from abc import ABC, abstractmethod
+from functools import wraps
+from typing import Callable, Any, Awaitable
+ 
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
+# 定义一个抽象基类来表示异步任务
+class AsyncTask(ABC):
+    @abstractmethod
+    async def run(self) -> Any:
+        pass
+ 
+# 定义一个具体的异步任务实现
+class ComputeTask(AsyncTask):
+    def __init__(self, task_id: int, compute_time: float):
+        self.task_id = task_id
+        self.compute_time = compute_time
+ 
+    async def run(self) -> None:
+        logging.info(f"Task {self.task_id} (Compute) started.")
+        await asyncio.sleep(self.compute_time)  # 模拟异步计算任务
+        logging.info(f"Task {self.task_id} (Compute) completed.")
+ 
+# 定义一个异步任务装饰器，用于记录任务执行时间
+def async_timeit(func: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any]]:
+    @wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
+        start_time = asyncio.get_event_loop().time()
+        result = await func(*args, **kwargs)
+        end_time = asyncio.get_event_loop().time()
+        logging.info(f"{func.__name__} executed in {end_time - start_time:.4f} seconds")
+        return result
+    return wrapper
+ 
+# 定义一个异步任务队列管理器
+class AsyncTaskQueue:
+    def __init__(self, max_workers: int = 5):
+        self.max_workers = max_workers
+        self.queue = asyncio.Queue()
+        self.semaphore = asyncio.Semaphore(max_workers)
+ 
+    async def add_task(self, task: AsyncTask) -> None:
+        await self.queue.put(task)
+        async with self.semaphore:
+            await self._process_queue()
+ 
+    async def _process_queue(self) -> None:
+        if self.queue.empty():
+            self.semaphore.release()
+            return
+        task = await self.queue.get()
+        asyncio.create_task(self._run_task(task))
+ 
+    async def _run_task(self, task: AsyncTask) -> None:
+        try:
+            await task.run()
+        finally:
+            self.queue.task_done()
+            await self._process_queue()  # 递归调用以处理队列中的下一个任务
+ 
+# 使用上下文管理器来确保异步任务队列正确关闭
+class AsyncTaskQueueManager:
+    def __init__(self, max_workers: int = 5):
+        self.task_queue = AsyncTaskQueue(max_workers)
+ 
+    async def __aenter__(self) -> 'AsyncTaskQueueManager':
+        return self
+ 
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.task_queue.queue.join()  # 等待所有任务完成
+        logging.info("All tasks completed. Shutting down task queue.")
+ 
+# 主程序
+async def main():
+    async with AsyncTaskQueueManager(max_workers=3) as task_manager:
+        # 添加异步任务到任务队列
+        for i in range(10):
+            task = ComputeTask(task_id=i + 1, compute_time=2)  # 每个任务持续2秒
+            await task_manager.task_queue.add_task(task)
+ 
+# 运行主程序
+if __name__ == "__main__":
+    asyncio.run(main())
