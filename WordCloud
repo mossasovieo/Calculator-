@@ -1,0 +1,16 @@
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+text = """
+Artificial Intelligence is the simulation of human intelligence processes by machines.
+Python is a versatile programming language with powerful libraries for data science.
+Word clouds are a great way to visualize text data.
+"""
+
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+
+plt.figure(figsize=(10, 5))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.title("Word Cloud Example")
+plt.show()
