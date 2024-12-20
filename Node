@@ -1,0 +1,41 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+Node* insert(Node* root, int data) {
+    if (!root) return new Node(data);
+    if (data < root->data)
+        root->left = insert(root->left, data);
+    else
+        root->right = insert(root->right, data);
+    return root;
+}
+
+void inOrderTraversal(Node* root) {
+    if (root) {
+        inOrderTraversal(root->left);
+        cout << root->data << " ";
+        inOrderTraversal(root->right);
+    }
+}
+
+int main() {
+    Node* root = nullptr;
+    int values[] = {30, 10, 50, 5, 20, 40, 60};
+
+    for (int value : values) {
+        root = insert(root, value);
+    }
+
+    cout << "In-order traversal: ";
+    inOrderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
