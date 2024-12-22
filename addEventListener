@@ -1,0 +1,29 @@
+document.addEventListener("DOMContentLoaded", () => {
+    let counter = 0;
+
+    const counterDisplay = document.createElement("div");
+    counterDisplay.textContent = `Counter: ${counter}`;
+    counterDisplay.style.fontSize = "24px";
+    counterDisplay.style.margin = "10px 0";
+
+    const incrementButton = document.createElement("button");
+    incrementButton.textContent = "Increment";
+    incrementButton.style.marginRight = "5px";
+
+    const decrementButton = document.createElement("button");
+    decrementButton.textContent = "Decrement";
+
+    incrementButton.addEventListener("click", () => {
+        counter++;
+        counterDisplay.textContent = `Counter: ${counter}`;
+    });
+
+    decrementButton.addEventListener("click", () => {
+        counter--;
+        counterDisplay.textContent = `Counter: ${counter}`;
+    });
+
+    document.body.appendChild(counterDisplay);
+    document.body.appendChild(incrementButton);
+    document.body.appendChild(decrementButton);
+});
