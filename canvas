@@ -1,0 +1,16 @@
+<canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(event) {
+        if (!drawing) return;
+        ctx.lineTo(event.offsetX, event.offsetY);
+        ctx.stroke();
+    }
+</script>
