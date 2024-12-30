@@ -1,0 +1,7 @@
+### 3. **简易JSON数据可视化**
+import json
+
+data = '{"name": "Bobu", "hobby": "writing", "projects": 5}'
+parsed = json.loads(data)
+for key, value in parsed.items():
+    print(f"{key.capitalize()}: {value}")
