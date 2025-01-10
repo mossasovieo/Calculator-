@@ -1,0 +1,17 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int main() {
+    double radius;
+    const double PI = 3.14159;
+
+    cout << "请输入圆的半径: ";
+    cin >> radius;
+
+    double area = PI * pow(radius, 2);
+    double circumference = 2 * PI * radius;
+
+    cout << "面积: " << area << ", 周长: " << circumference << endl;
+    return 0;
+}
