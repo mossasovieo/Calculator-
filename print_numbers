@@ -1,0 +1,14 @@
+import threading
+
+def print_numbers(start, end):
+    for i in range(start, end + 1):
+        print(i, end=" ")
+
+threads = []
+for i in range(5):
+    t = threading.Thread(target=print_numbers, args=(i * 10, (i + 1) * 10 - 1))
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
