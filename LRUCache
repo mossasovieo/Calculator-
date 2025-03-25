@@ -1,0 +1,39 @@
+import java.util.*;
+
+class LRUCache<K, V> {
+    private final int capacity;
+    private final Map<K, V> map;
+    private final LinkedList<K> order;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        this.map = new HashMap<>();
+        this.order = new LinkedList<>();
+    }
+
+    public V get(K key) {
+        if (!map.containsKey(key)) return null;
+        order.remove(key);
+        order.addFirst(key);
+        return map.get(key);
+    }
+
+    public void put(K key, V value) {
+        if (map.containsKey(key)) order.remove(key);
+        else if (map.size() == capacity) map.remove(order.removeLast());
+
+        order.addFirst(key);
+        map.put(key, value);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        LRUCache<Integer, String> cache = new LRUCache<>(2);
+        cache.put(1, "A");
+        cache.put(2, "B");
+        System.out.println(cache.get(1));
+        cache.put(3, "C");
+        System.out.println(cache.get(2));
+    }
+}
