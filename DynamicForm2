@@ -1,0 +1,30 @@
+import React, { useState } from 'react';
+
+function DynamicForm() {
+    const [fields, setFields] = useState([{ value: "" }]);
+
+    const handleChange = (i, event) => {
+        const newFields = [...fields];
+        newFields[i].value = event.target.value;
+        setFields(newFields);
+    };
+
+    const addField = () => {
+        setFields([...fields, { value: "" }]);
+    };
+
+    return (
+        <div>
+            {fields.map((field, i) => (
+                <input
+                    key={i}
+                    value={field.value}
+                    onChange={(e) => handleChange(i, e)}
+                />
+            ))}
+            <button onClick={addField}>Add Field</button>
+        </div>
+    );
+}
+
+export default DynamicForm;
