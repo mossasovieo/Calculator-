@@ -1,0 +1,23 @@
+use reqwest::Client;
+use tokio::task;
+use futures::future::join_all;
+
+#[tokio::main]
+async fn main() {
+    let urls = vec![
+        "https://example.com",
+        "https://google.com",
+        "https://github.com"
+    ];
+
+    let client = Client::new();
+    let futures = urls.iter().map(|&url| {
+        let client = client.clone();
+        task::spawn(async move {
+            let res = client.get(url).send().await.unwrap();
+            println!("Fetched {} with status {}", url, res.status());
+        })
+    });
+
+    join_all(futures).await;
+}
